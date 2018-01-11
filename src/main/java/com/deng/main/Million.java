@@ -3,6 +3,7 @@ package com.deng.main;
 import com.deng.openUrl.Gotourl;
 import com.deng.parseScreen.ImageUtils;
 import com.deng.parseScreen.ParseImg;
+import com.deng.parseScreen.ParseStr;
 import com.deng.printScreen.ScreenShot;
 import com.deng.printScreen.ScreenShotAndCut;
 import net.sourceforge.tess4j.Tesseract;
@@ -13,6 +14,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
 /**
@@ -21,16 +24,19 @@ import java.util.Scanner;
 public class Million {
 
     public static void main(String[] args) throws IOException {
-
         ParseImg parseImg = new ParseImg("src/main/resources");
 
-        ScreenShotAndCut screenShotAndCut = new ScreenShotAndCut("W8R0215829003641");
+//      ScreenShotAndCut screenShotAndCut = new ScreenShotAndCut("W8R0215829003641");
 
         Scanner sc = new Scanner(System.in);
+
+//        ParseStr parseStr = new ParseStr();
 
         while (sc.nextInt() == 1) {
 
             double start = System.currentTimeMillis();
+
+            String andscreepCap = "adb shell screencap -p | sed 's/\\r$//' > d:/screenshot.png";
 
 //            String print = "adb shell /system/bin/screencap -p /sdcard/screenshot.png";
 //
@@ -42,7 +48,7 @@ public class Million {
 //            ScreenShot.exeCmd(toPc);
 //
 
-            screenShotAndCut.getScreenShot(screenShotAndCut.huawei,"d:/screenshot.png");
+//            screenShotAndCut.getScreenShot(screenShotAndCut.huawei,"d:/screenshot.png");
             double end2 = System.currentTimeMillis();
             System.out.println("读取耗时" + (end2 - start) / 1000 + " s");
 
@@ -55,13 +61,13 @@ public class Million {
             System.out.println("截取耗时" + (end3 - end2) / 1000 + " s");
 
             String result = parseImg.parseImgFunc(textImage);
+            result = result.replaceAll("[^\u4E00-\u9FA5]", "");
             double end4 = System.currentTimeMillis();
             System.out.println("解析耗时" + (end4 - end3) / 1000 + " s");
 
             StringBuffer sb = new StringBuffer("https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=");
-            sb.append(result.replaceAll("[^\u4E00-\u9FA5]", ""));
-            String wd = sb.toString();
-            Gotourl.openDefaultBrowser(wd);
+            sb.append(URLEncoder.encode(result.toString(), "utf-8"));
+            Gotourl.openDefaultBrowser(sb.toString());
 
         }
 
